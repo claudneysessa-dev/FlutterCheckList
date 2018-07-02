@@ -19,9 +19,11 @@ class StepCardState extends State<StepCard> {
 
   StepClass step;
   List<CameraDescription> cameras;
+  TextEditingController  myController;
 
   StepCardState(StepClass step) {
     this.step = step;
+    this.myController = TextEditingController(text: this.step.notes);
     try {
       availableCameras()
           .then((val) => setState(() {
@@ -31,6 +33,13 @@ class StepCardState extends State<StepCard> {
     } on CameraException catch (e) {
       logError(e.code, e.description);
     }
+  }
+
+  @override
+  void dispose() {
+    // Clean up the controller when the Widget is disposed
+    myController.dispose();
+    super.dispose();
   }
 
   @override
@@ -45,9 +54,7 @@ class StepCardState extends State<StepCard> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             buttons(context),
-            new HtmlTextView(data: step.content),
-//            Text(step.content, style: textStyle, overflow: TextOverflow.clip,),
-//            Icon(Icons.check_box, size: 128.0, color: textStyle.color),
+            new HtmlTextView(data: step.content)
           ],
         ),
       ),
@@ -60,8 +67,12 @@ class StepCardState extends State<StepCard> {
         mainAxisSize: MainAxisSize.min, // this will take space as minimum as posible(to center)
         children: <Widget>[
           new IconButton(
-              icon: new Icon(Icons.done),
-              onPressed: null
+              icon: new Icon(step.isDone ? Icons.done_all: Icons.done),
+              onPressed: () {
+                setState(() {
+                  step.isDone = step.isDone ? false: true;
+                });
+              }
           ),
           new IconButton(
               icon: new Icon(
@@ -72,12 +83,7 @@ class StepCardState extends State<StepCard> {
               Navigator.of(context).push(
                 new MaterialPageRoute(
                   builder: (context) {
-                    return new Scaffold(
-                        appBar: new AppBar(
-                          title: new Text('Camera'),
-                        ),
-                        body: new Camera(cameras)
-                    );
+                    return new Camera(this.cameras, this.step);
                   },
                 ),
               );
@@ -102,6 +108,7 @@ class StepCardState extends State<StepCard> {
             new Expanded(
               child: new TextField(
                 autofocus: true,
+                controller: myController,
                 decoration: new InputDecoration(
                     labelText: 'Add Notes', hintText: 'eg. This step required extra efforts.'),
               ),
@@ -112,12 +119,13 @@ class StepCardState extends State<StepCard> {
           new FlatButton(
               child: const Text('CANCEL'),
               onPressed: () {
-                Navigator.pop(context);
+                Navigator.of(context, rootNavigator: true).pop('dialog');
               }),
           new FlatButton(
-              child: const Text('OPEN'),
+              child: const Text('ADD'),
               onPressed: () {
-                Navigator.pop(context);
+                step.notes = myController.text;
+                Navigator.of(context, rootNavigator: true).pop('dialog');
               })
         ],
       ),

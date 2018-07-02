@@ -6,6 +6,8 @@ class StepClass implements ListItem {
   final String type;
   final String checklist;
   final String content;
+  String _notes;
+  String _imageUrl;
   bool isDone = false;
 
   StepClass({this.id, this.name, this.type, this.checklist, this.content});
@@ -20,13 +22,13 @@ class StepClass implements ListItem {
     );
   }
 
-  String get notes => this.notes;
+  String get notes => _notes;
   set notes(String notes) {
-    this.notes = notes;
+    _notes = notes;
   }
 
-  String get imageUrl => this.imageUrl;
+  String get imageUrl => _imageUrl;
   set imageUrl(String imageUrl) {
-    this.imageUrl = imageUrl;
+    _imageUrl = imageUrl;
   }
 }
