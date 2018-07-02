@@ -43,6 +43,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.8.4"
+  camera:
+    dependency: "direct main"
+    description:
+      name: camera
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.2.1"
   charcode:
     dependency: transitive
     description:
@@ -424,3 +431,4 @@ packages:
     version: "2.1.13"
 sdks:
   dart: ">=2.0.0-dev.54.0 <=2.0.0-dev.58.0.flutter-f981f09760"
+  flutter: ">=0.1.4 <2.0.0"
