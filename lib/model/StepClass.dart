@@ -19,4 +19,14 @@ class StepClass implements ListItem {
         content: json['content'] as String
     );
   }
+
+  String get notes => this.notes;
+  set notes(String notes) {
+    this.notes = notes;
+  }
+
+  String get imageUrl => this.imageUrl;
+  set imageUrl(String imageUrl) {
+    this.imageUrl = imageUrl;
+  }
 }

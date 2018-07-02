@@ -122,6 +122,9 @@ class CategoryState extends State<Categories> {
         subtitle: new Text(
           checkList.category
         ),
+        trailing: new Text(
+          checkList.humanReadableTime(checkList.timestamp)
+        ),
         onTap: () {
           setState(() {
             if (!checkList.alreadySaved) {

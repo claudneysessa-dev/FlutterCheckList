@@ -1,5 +1,7 @@
 import 'package:flutter_app/model/ListItem.dart';
 import 'package:flutter_app/model/StepClass.dart';
+import 'package:intl/intl.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 class CheckList implements ListItem {
   final int id;
@@ -8,6 +10,13 @@ class CheckList implements ListItem {
   final String category;
   final List<StepClass> steps;
   bool alreadySaved = false;
+  final int timestamp = new DateTime.now().millisecondsSinceEpoch;
+
+  humanReadableTime (int t) {
+    DateTime date = new DateTime.fromMillisecondsSinceEpoch(t);
+    var format = new DateFormat.yMd().add_jm();
+    return format.format(date);
+  }
 
   CheckList({this.id, this.name, this.type, this.category, this.steps});
 
