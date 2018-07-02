@@ -6,8 +6,8 @@ class StepClass implements ListItem {
   final String type;
   final String checklist;
   final String content;
-  String _notes;
-  String _imageUrl;
+  String _notes = "";
+  String _imageUrl = "";
   bool isDone = false;
 
   StepClass({this.id, this.name, this.type, this.checklist, this.content});

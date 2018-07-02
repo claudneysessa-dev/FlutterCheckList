@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/cupertino.dart';
@@ -54,7 +55,8 @@ class StepCardState extends State<StepCard> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             buttons(context),
-            new HtmlTextView(data: step.content)
+            new HtmlTextView(data: step.content),
+            _thumbnailWidget()
           ],
         ),
       ),
@@ -94,6 +96,22 @@ class StepCardState extends State<StepCard> {
             onPressed: _showDialog
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _thumbnailWidget() {
+    return new Expanded(
+      child: new Align(
+        alignment: Alignment.bottomCenter,
+        child:new SizedBox(
+          child: step.imageUrl.isEmpty
+            ? new Container()
+            : new Image.file(new File(step.imageUrl)),
+          width: 128.0,
+          height: 128.0,
+          //TODO implement ontap larger image or allow user to click other image
+        ),
       ),
     );
   }
