@@ -104,14 +104,26 @@ class StepCardState extends State<StepCard> {
     return new Expanded(
       child: new Align(
         alignment: Alignment.bottomCenter,
-        child:new SizedBox(
-          child: step.imageUrl.isEmpty
-            ? new Container()
-            : new Image.file(new File(step.imageUrl)),
-          width: 128.0,
-          height: 128.0,
-          //TODO implement ontap larger image or allow user to click other image
-        ),
+        child: new GestureDetector(
+          child: new SizedBox(
+            child: step.imageUrl.isEmpty
+                ? new Container()
+                : new Image.file(new File(step.imageUrl)),
+            width: 128.0,
+            height: 128.0,
+            //TODO implement ontap larger image or allow user to click other image
+          ),
+          onTap: () {
+            showDialog(
+              context: context,
+              builder: (_) => new AlertDialog(
+                content: new Hero(
+                  child: new Image.file(new File(step.imageUrl)), tag: "Step Image preview",
+                ),
+              ),
+            );
+          },
+        )
       ),
     );
   }
