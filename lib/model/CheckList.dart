@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter_app/model/ListItem.dart';
 import 'package:flutter_app/model/StepClass.dart';
 import 'package:intl/intl.dart';
@@ -10,7 +12,11 @@ class CheckList implements ListItem {
   final String category;
   final List<StepClass> steps;
   bool alreadySaved = false;
-  final int timestamp = new DateTime.now().millisecondsSinceEpoch;
+  int _timestamp = new DateTime.now().millisecondsSinceEpoch;
+  int get timestamp => _timestamp;
+  set timestamp(int t) {
+    _timestamp = t;
+  }
 
   humanReadableTime (int t) {
     DateTime date = new DateTime.fromMillisecondsSinceEpoch(t);
@@ -28,5 +34,21 @@ class CheckList implements ListItem {
       category: json['category'] as String,
       steps: (json['steps'] as List).map((i) => StepClass.fromJson(i)).toList()
     );
+  }
+
+  Map<String, dynamic> toJson() =>
+    {
+      this.timestamp.toString(): {
+        'id': this.id,
+        'steps': stepsToJson()
+      }
+    };
+
+  stepsToJson() {
+    var result = [];
+    for(StepClass step in this.steps) {
+      result.add({"id": step.id, "notes": step.notes, "imageUrl": step.imageUrl, "isDone": step.isDone});
+    }
+    return json.encode(result);
   }
 }

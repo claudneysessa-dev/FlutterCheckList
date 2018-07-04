@@ -12,7 +12,7 @@ class StepCard extends StatefulWidget {
   const StepCard({Key key, this.step}) : super(key: key);
 
   final StepClass step;
-
+  //TODO save checklist on step update
   @override
   createState() => new StepCardState(this.step);
 }

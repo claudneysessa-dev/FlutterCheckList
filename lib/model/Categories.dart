@@ -1,3 +1,6 @@
+import 'dart:io';
+import 'dart:convert';
+import 'package:path_provider/path_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +22,84 @@ class Categories extends StatefulWidget {
 class CategoryState extends State<Categories> {
   final _saved = new Set<CheckList>();
   final _biggerFont = const TextStyle(fontSize: 18.0);
+  File jsonFile;
+  Directory dir;
+  String fileName = "savedCheckLists.json";
+  bool fileExists = false;
+  List<dynamic> fileContent;
+
+  @override
+  void initState() {
+    super.initState();
+    getApplicationDocumentsDirectory().then((Directory directory) async {
+      dir = directory;
+      jsonFile = new File(dir.path + "/" + fileName);
+      fileExists = jsonFile.existsSync();
+      if (fileExists) this.setState(() => fileContent = jsonDecode(jsonFile.readAsStringSync()));
+      if (fileContent != null) {
+        List<CategoryClass> categories = await fetchCategories();
+        fileContent.forEach((savedCheckList) {
+          Map<String, dynamic> obj = savedCheckList as Map<String, dynamic>;
+          String timestamp;
+          int checkListId;
+          List<dynamic> stepsData = new List<dynamic>();
+          obj.forEach((t, objData) {
+            timestamp = t;
+            Map<String, dynamic> objDataData = objData;
+            objDataData.forEach((key, value) {
+              if (key == "id"){
+                checkListId = value;
+              } else if (key == "steps") {
+                stepsData = jsonDecode(value);
+              }
+            });
+          });
+          categories.forEach((category) {
+            category.checkLists.forEach((checkList) {
+              if (checkList.id == checkListId) {
+                checkList.timestamp = int.parse(timestamp);
+                checkList.alreadySaved = true;
+                checkList.steps.forEach((step) {
+                  stepsData.forEach((stepData) {
+                    if (step.id == stepData["id"]) {
+                      step.imageUrl = stepData["imageUrl"];
+                      step.notes = stepData["notes"];
+                      step.isDone = stepData["isDone"];
+                    }
+                  });
+                });
+                _saved.add(checkList);
+              }
+            });
+          });
+        });
+      }
+      if (_saved.isNotEmpty) setState(() {});
+    });
+  }
+
+  void createFile(Map<String, dynamic> content, Directory dir, String fileName) {
+    print("Creating Saved CheckLists file!");
+    File file = new File(dir.path + "/" + fileName);
+    file.createSync();
+    fileExists = true;
+    file.writeAsStringSync(jsonEncode([content]));
+  }
+
+  void writeToFile(CheckList checklist) {
+    print("Writing to Saved CheckLists file!");
+    Map<String, dynamic> content = checklist.toJson();
+    if (fileExists) {
+      print("File exists");
+      List<dynamic> jsonFileContent = jsonDecode(jsonFile.readAsStringSync());
+      jsonFileContent.add(content);
+      jsonFile.writeAsStringSync(jsonEncode(jsonFileContent));
+    } else {
+      print("File does not exist!");
+      createFile(content, dir, fileName);
+    }
+    this.setState(() => fileContent = jsonDecode(jsonFile.readAsStringSync()));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -129,6 +210,7 @@ class CategoryState extends State<Categories> {
             if (!checkList.alreadySaved) {
               //save to _saved list
               checkList.alreadySaved = true;
+              writeToFile(checkList);
               _saved.add(checkList);
               Navigator.pop(context);
             } else {
