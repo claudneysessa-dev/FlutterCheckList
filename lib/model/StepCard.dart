@@ -17,7 +17,6 @@ class StepCard extends StatefulWidget {
 
   final StepClass step;
   final CheckList checklist;
-  //TODO save checklist on step update
   @override
   createState() => new StepCardState(this.step, this.checklist);
 }

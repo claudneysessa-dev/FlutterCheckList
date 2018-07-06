@@ -1,13 +1,8 @@
-import 'dart:io';
-import 'dart:convert';
-import 'dart:async';
 import 'package:flutter_app/data/database.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/EditCheckList.dart';
-import 'package:flutter_app/data/category_parser.dart';
 import 'package:flutter_app/model/CategoryClass.dart';
 import 'package:flutter_app/model/CheckList.dart';
 import 'package:flutter_app/model/ListItem.dart';

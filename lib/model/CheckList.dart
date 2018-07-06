@@ -4,7 +4,6 @@ import 'package:flutter_app/model/CategoryClass.dart';
 import 'package:flutter_app/model/ListItem.dart';
 import 'package:flutter_app/model/StepClass.dart';
 import 'package:intl/intl.dart';
-import 'package:intl/date_symbol_data_local.dart';
 
 class CheckList implements ListItem {
   static final db_id = "id";
