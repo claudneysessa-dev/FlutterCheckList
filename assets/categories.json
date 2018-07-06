@@ -39,14 +39,14 @@
             "checklist_id": 1,
             "contents": [
               {
-                "id": 1,
+                "id": 3,
                 "name": "content1",
                 "type": "content",
                 "text": "This is text 1 for step 2",
                 "step_id": 2
               },
               {
-                "id": 2,
+                "id": 4,
                 "name": "content2",
                 "type": "content",
                 "text": "This is text 2 for step 2",
@@ -69,14 +69,14 @@
             "checklist_id": 2,
             "contents": [
               {
-                "id": 1,
+                "id": 5,
                 "name": "content1",
                 "type": "content",
                 "text": "This is text 1 for step 3",
                 "step_id": 3
               },
               {
-                "id": 2,
+                "id": 6,
                 "name": "content2",
                 "type": "content",
                 "text": "This is text 2 for step 3",
@@ -91,14 +91,14 @@
             "checklist_id": 2,
             "contents": [
               {
-                "id": 1,
+                "id": 7,
                 "name": "content1",
                 "type": "content",
                 "text": "This is text 1 for step 4",
                 "step_id": 4
               },
               {
-                "id": 2,
+                "id": 8,
                 "name": "content2",
                 "type": "content",
                 "text": "This is text 2 for step 4",
@@ -128,14 +128,14 @@
             "checklist_id": 3,
             "contents": [
               {
-                "id": 1,
+                "id": 9,
                 "name": "content1",
                 "type": "content",
                 "text": "This is text 1 for step 5",
                 "step_id": 5
               },
               {
-                "id": 2,
+                "id": 10,
                 "name": "content2",
                 "type": "content",
                 "text": "This is text 2 for step 5",
@@ -150,14 +150,14 @@
             "checklist_id": 3,
             "contents": [
               {
-                "id": 1,
+                "id": 11,
                 "name": "content1",
                 "type": "content",
                 "text": "This is text 1 for step 6",
                 "step_id": 6
               },
               {
-                "id": 2,
+                "id": 12,
                 "name": "content2",
                 "type": "content",
                 "text": "This is text 2 for step 6",
@@ -180,14 +180,14 @@
             "checklist_id": 4,
             "contents": [
               {
-                "id": 1,
+                "id": 13,
                 "name": "content1",
                 "type": "content",
                 "text": "This is text 1 for step 7",
                 "step_id": 7
               },
               {
-                "id": 2,
+                "id": 14,
                 "name": "content2",
                 "type": "content",
                 "text": "This is text 2 for step 7",
@@ -202,14 +202,14 @@
             "checklist_id": 4,
             "contents": [
               {
-                "id": 1,
+                "id": 15,
                 "name": "content1",
                 "type": "content",
                 "text": "This is text 1 for step 8",
                 "step_id": 8
               },
               {
-                "id": 2,
+                "id": 16,
                 "name": "content2",
                 "type": "content",
                 "text": "This is text 2 for step 8",
