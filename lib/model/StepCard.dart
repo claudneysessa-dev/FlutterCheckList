@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
-
+import 'package:flutter_app/model/CheckList.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,21 +11,29 @@ import 'package:flutter_app/data/html_parser.dart';
 import 'package:flutter_app/model/StepClass.dart';
 
 class StepCard extends StatefulWidget {
-  const StepCard({Key key, this.step}) : super(key: key);
+  const StepCard({Key key, this.step, this.checklist}) : super(key: key);
 
   final StepClass step;
+  final CheckList checklist;
   //TODO save checklist on step update
   @override
-  createState() => new StepCardState(this.step);
+  createState() => new StepCardState(this.step, this.checklist);
 }
 class StepCardState extends State<StepCard> {
 
   StepClass step;
+  CheckList checklist;
   List<CameraDescription> cameras;
   TextEditingController  myController;
+  File jsonFile;
+  Directory dir;
+  String fileName = "savedCheckLists.json";
+  bool fileExists = false;
+  List<dynamic> fileContent;
 
-  StepCardState(StepClass step) {
+  StepCardState(StepClass step, CheckList checklist) {
     this.step = step;
+    this.checklist = checklist;
     this.myController = TextEditingController(text: this.step.notes);
     try {
       availableCameras()
@@ -46,6 +56,7 @@ class StepCardState extends State<StepCard> {
   @override
   Widget build(BuildContext context) {
     final TextStyle textStyle = Theme.of(context).textTheme.body1;
+    _updateSavedStep();
     return Card(
       color: Colors.white,
       child: Padding(
@@ -86,10 +97,10 @@ class StepCardState extends State<StepCard> {
                 new MaterialPageRoute(
                   builder: (context) {
                     return new Camera(this.cameras, this.step);
-                  },
+                  }
                 ),
               );
-            },
+            }
           ),
           new IconButton(
             icon: new Icon(Icons.note_add),
@@ -122,7 +133,7 @@ class StepCardState extends State<StepCard> {
                 ),
               ),
             );
-          },
+          }
         )
       ),
     );
@@ -160,5 +171,31 @@ class StepCardState extends State<StepCard> {
         ],
       ),
     );
+  }
+
+  _updateSavedStep() {
+    //TODO implement this function
+    Map<String, dynamic> content = checklist.toJson();
+    List<dynamic> jsonFileContent = jsonDecode(jsonFile.readAsStringSync());
+    jsonFileContent.forEach((savedChecklist) {
+      Map<String, dynamic> obj = savedChecklist as Map<String, dynamic>;
+      obj.forEach((t, objData) {
+        Map<String, dynamic> objDataData = objData;
+        List<dynamic> stepsData = new List<dynamic>();
+        objDataData.forEach((key, value) {
+          if (key == "steps") {
+            stepsData = jsonDecode(value);
+          }
+        });
+        stepsData.forEach((stepData) {
+          if(stepData["id"] == step.id) {
+            stepData["isDone"] = step.isDone;
+            stepData["imageUrl"] = step.imageUrl;
+            stepData["notes"] = step.notes;
+          }
+        });
+      });
+    });
+    jsonFile.writeAsStringSync(jsonEncode(jsonFileContent));
   }
 }

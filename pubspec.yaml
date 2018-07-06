@@ -12,6 +12,7 @@ dependencies:
   camera: any
   intl: any
   path_provider: any
+  sqflite: any
 
 dev_dependencies:
   flutter_test:

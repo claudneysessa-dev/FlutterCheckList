@@ -53,7 +53,7 @@ class _AppBarBottomSampleState extends State<EditCheckList>
             icon: const Icon(Icons.arrow_back),
             onPressed: () {
               _nextPage(-1);
-            },
+            }
           ),
           actions: <Widget>[
             IconButton(
@@ -61,7 +61,7 @@ class _AppBarBottomSampleState extends State<EditCheckList>
               tooltip: 'Next choice',
               onPressed: () {
                 _nextPage(1);
-              },
+              }
             ),
           ],
           bottom: PreferredSize(
@@ -81,7 +81,7 @@ class _AppBarBottomSampleState extends State<EditCheckList>
           children: checkList.steps.map((StepClass step) {
             return Padding(
               padding: const EdgeInsets.all(16.0),
-              child: StepCard(step: step),
+              child: StepCard(step: step, checklist: checkList),
             );
           }).toList(),
         ),

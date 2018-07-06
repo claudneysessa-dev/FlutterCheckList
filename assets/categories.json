@@ -8,21 +8,36 @@
         "id": 1,
         "type": "checklist",
         "name": "CheckList67",
-        "category": "Category1",
+        "category_id": 1,
         "steps": [
           {
             "id": 1,
             "type": "step",
             "name": "Initial",
-            "checklist": "CheckList1",
-            "content": "This is step 1 This is step 1 This is step 1 This is step 1This is step 1 This is step 1 This is step 1 This is step 1"
+            "checklist_id": 1,
+            "contents": [
+              {
+                "id": 1,
+                "name": "content1",
+                "type": "content",
+                "text": "This is text 1",
+                "step_id": 1
+              },
+              {
+                "id": 2,
+                "name": "content2",
+                "type": "content",
+                "text": "This is text 2",
+                "step_id": 1
+              }
+            ]
           },
           {
             "id": 2,
             "type": "step",
             "name": "Second",
-            "checklist": "CheckList1",
-            "content": "This is step 2  This is step 1 This is step 1 This is step 1This is step 1 This is step 1 This is step 1 This is step 1"
+            "checklist_id": 1,
+            "contents": []
           }
         ]
       },
@@ -30,21 +45,21 @@
         "id": 2,
         "type": "checklist",
         "name": "CheckList2",
-        "category": "Category1",
+        "category_id": 1,
         "steps": [
           {
             "id": 3,
             "type": "step",
             "name": "Initial",
-            "checklist": "CheckList2",
-            "content": "This is step 1  This is step 1 This is step 1 This is step 1This is step 1 This is step 1 This is step 1 This is step 1"
+            "checklist_id": 2,
+            "contents": []
           },
           {
             "id": 4,
             "type": "step",
             "name": "Third",
-            "checklist": "CheckList2",
-            "content": "This is step 2v This is step 1 This is step 1 This is step 1This is step 1 This is step 1 This is step 1 This is step 1"
+            "checklist_id": 2,
+            "contents": []
           }
         ]
       }
@@ -59,21 +74,21 @@
         "id": 3,
         "type": "checklist",
         "name": "CheckList3",
-        "category": "Category2",
+        "category_id": 2,
         "steps": [
           {
             "id": 5,
             "type": "step",
             "name": "Fourth",
-            "checklist": "CheckList3",
-            "content": "This is step 1  This is step 1 <br> This is step 1 This is step 1This is step 1 This is step 1 This is step 1 This is step 1"
+            "checklist_id": 3,
+            "contents": []
           },
           {
             "id": 6,
             "type": "step",
             "name": "Fifth",
-            "checklist": "CheckList3",
-            "content": "This is step 2  This is step 1 This is step 1 This is step 1This is step 1 This is step 1 This is step 1 This is step 1"
+            "checklist_id": 3,
+            "contents": []
           }
         ]
       },
@@ -81,21 +96,21 @@
         "id": 4,
         "type": "checklist",
         "name": "CheckList4",
-        "category": "Category2",
+        "category_id": 2,
         "steps": [
           {
             "id": 7,
             "type": "step",
             "name": "Initial",
-            "checklist": "CheckList4",
-            "content": "This is step 1  This is step 1 This is step 1 This is step 1This is step 1 This is step 1 This is step 1 This is step 1"
+            "checklist_id": 4,
+            "contents": []
           },
           {
             "id": 8,
             "type": "step",
             "name": "Sixth",
-            "checklist": "CheckList4",
-            "content": "This is step 2  This is step 1 This is step 1 This is step 1This is step 1 This is step 1 This is step 1 This is step 1"
+            "checklist_id": 4,
+            "contents": []
           }
         ]
       }
