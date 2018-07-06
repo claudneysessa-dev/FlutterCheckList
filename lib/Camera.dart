@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
+import 'package:flutter_app/data/database.dart';
+import 'package:flutter_app/model/CheckList.dart';
 import 'package:flutter_app/model/StepClass.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -9,34 +11,36 @@ void logError(String code, String message) =>
     print('Error: $code\nError Message: $message');
 
 class Camera extends StatefulWidget {
-  Camera(List<CameraDescription> cameras, StepClass step) {
-    this.cameras = cameras;
-    this.step = step;
-  }
-
   List<CameraDescription> cameras;
   StepClass step;
+  CheckList checklist;
   String imagePath;
 
+  Camera({this.cameras, this.checklist, this.step});
+
   @override
-  _CameraAppState createState() => new _CameraAppState(this.cameras, this.step);
+  _CameraAppState createState() => new _CameraAppState(
+      cameras: this.cameras,
+      checklist: this.checklist,
+      step: this.step
+  );
 }
 
 class _CameraAppState extends State<Camera> {
+  ChecklistDatabase database;
   CameraController controller;
   List<CameraDescription> cameras;
   StepClass step;
+  CheckList checklist;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   String timestamp() => new DateTime.now().millisecondsSinceEpoch.toString();
 
-  _CameraAppState(List<CameraDescription> cameras, StepClass step) {
-    this.cameras = cameras;
-    this.step = step;
-  }
+  _CameraAppState({this.cameras, this.checklist, this.step});
 
   @override
   void initState() {
     super.initState();
+    database = ChecklistDatabase.get();
     controller = new CameraController(cameras[0], ResolutionPreset.medium);
     controller.initialize().then((_) {
       if (!mounted) {
@@ -82,6 +86,7 @@ class _CameraAppState extends State<Camera> {
       if (mounted) {
         setState(() {
           step.imagePath = filePath;
+          database.upsertSavedStep(checklist: checklist, step: step);
         });
         if (filePath != null) showInSnackBar('Picture saved to $filePath');
         Navigator.of(context).pop();

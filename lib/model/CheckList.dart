@@ -20,6 +20,7 @@ class CheckList implements ListItem {
   CategoryClass category;
   List<StepClass> steps;
   bool alreadySaved = false;
+  int saved_checklist_id;
   int _timestamp = new DateTime.now().millisecondsSinceEpoch;
   int get timestamp => _timestamp;
   set timestamp(int t) {

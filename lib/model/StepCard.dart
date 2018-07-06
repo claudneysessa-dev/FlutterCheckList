@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter_app/data/database.dart';
 import 'package:flutter_app/model/CheckList.dart';
+import 'package:flutter_app/model/ContentClass.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/cupertino.dart';
@@ -20,11 +22,17 @@ class StepCard extends StatefulWidget {
   createState() => new StepCardState(this.step, this.checklist);
 }
 class StepCardState extends State<StepCard> {
-
+  ChecklistDatabase database;
   StepClass step;
   CheckList checklist;
   List<CameraDescription> cameras;
   TextEditingController  myController;
+
+  @override
+  void initState() {
+    super.initState();
+    database = ChecklistDatabase.get();
+  }
 
   StepCardState(StepClass step, CheckList checklist) {
     this.step = step;
@@ -51,7 +59,16 @@ class StepCardState extends State<StepCard> {
   @override
   Widget build(BuildContext context) {
     final TextStyle textStyle = Theme.of(context).textTheme.body1;
-    _updateSavedStep();
+    List<Widget> cardChildren = new List();
+    cardChildren.add(buttons(context));
+    for (ContentClass content in step.contents) {
+      cardChildren.add (
+          new HtmlTextView(
+              data: content.text.toString()
+          )
+      );
+    }
+    cardChildren.add(_thumbnailWidget());
     return Card(
       color: Colors.white,
       child: Padding(
@@ -59,11 +76,7 @@ class StepCardState extends State<StepCard> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            buttons(context),
-            new HtmlTextView(data: step.content),
-            _thumbnailWidget()
-          ],
+          children: cardChildren
         ),
       ),
     );
@@ -79,6 +92,7 @@ class StepCardState extends State<StepCard> {
               onPressed: () {
                 setState(() {
                   step.isDone = step.isDone ? false : true;
+                  _updateSavedStep();
                 });
               }
           ),
@@ -91,7 +105,11 @@ class StepCardState extends State<StepCard> {
               Navigator.of(context).push(
                 new MaterialPageRoute(
                   builder: (context) {
-                    return new Camera(this.cameras, this.step);
+                    return new Camera(
+                        cameras: this.cameras,
+                        checklist: this.checklist,
+                        step: this.step
+                    );
                   }
                 ),
               );
@@ -117,7 +135,6 @@ class StepCardState extends State<StepCard> {
                 : new Image.file(new File(step.imagePath)),
             width: 128.0,
             height: 128.0,
-            //TODO implement ontap larger image or allow user to click other image
           ),
           onTap: () {
             showDialog(
@@ -126,6 +143,18 @@ class StepCardState extends State<StepCard> {
                 content: new Hero(
                   child: new Image.file(new File(step.imagePath)), tag: "Step Image preview",
                 ),
+                actions: <Widget>[
+                  new FlatButton(
+                      child: const Text('REMOVE'),
+                      onPressed: () {
+                        setState(() {
+                          step.imagePath = "";
+                          _updateSavedStep();
+                        });
+                        Navigator.of(context, rootNavigator: true).pop('dialog');
+                      }),
+                  //TODO implement button to pick image from gallery
+                ],
               ),
             );
           }
@@ -161,6 +190,7 @@ class StepCardState extends State<StepCard> {
               child: const Text('ADD'),
               onPressed: () {
                 step.notes = myController.text;
+                _updateSavedStep();
                 Navigator.of(context, rootNavigator: true).pop('dialog');
               })
         ],
@@ -169,28 +199,6 @@ class StepCardState extends State<StepCard> {
   }
 
   _updateSavedStep() {
-    //TODO implement this function
-    Map<String, dynamic> content = checklist.toJson();
-    List<dynamic> jsonFileContent = jsonDecode(jsonFile.readAsStringSync());
-    jsonFileContent.forEach((savedChecklist) {
-      Map<String, dynamic> obj = savedChecklist as Map<String, dynamic>;
-      obj.forEach((t, objData) {
-        Map<String, dynamic> objDataData = objData;
-        List<dynamic> stepsData = new List<dynamic>();
-        objDataData.forEach((key, value) {
-          if (key == "steps") {
-            stepsData = jsonDecode(value);
-          }
-        });
-        stepsData.forEach((stepData) {
-          if(stepData["id"] == step.id) {
-            stepData["isDone"] = step.isDone;
-            stepData["imageUrl"] = step.imageUrl;
-            stepData["notes"] = step.notes;
-          }
-        });
-      });
-    });
-    jsonFile.writeAsStringSync(jsonEncode(jsonFileContent));
+    database.upsertSavedStep(checklist: checklist, step: step);
   }
 }

@@ -235,13 +235,14 @@ class ChecklistDatabase {
       var checklistId = map[StepClass.db_checklist_id];
       CheckList checklist = await getChecklist(checklistId.toString());
       checklist.alreadySaved = true;
+      checklist.saved_checklist_id = savedChecklistId;
       checklist.category = await getCategory(checklist.category_id.toString());
       checklist.steps = await getSteps(checklist: checklist);
       var stepsData = await getSavedStepsData(savedChecklistId.toString());
       for (Map<String,dynamic> stepData in stepsData) {
         for (StepClass step in checklist.steps) {
-          if (step.id == stepData["id"]) {
-            step.isDone = stepData[StepClass.db_isDone];
+          if (step.id == stepData[StepClass.db_saved_step_id]) {
+            step.isDone = stepData[StepClass.db_isDone] == 1 ? true : false;
             step.notes = stepData[StepClass.db_notes];
             step.imagePath = stepData[StepClass.db_imagePath];
           }
@@ -329,19 +330,6 @@ class ChecklistDatabase {
     return contents;
   }
 
-
-  //TODO escape not allowed characters eg. ' " '
-  /// Inserts or replaces the book.
-//  Future updateBook(Book book) async {
-//    var db = await _getDb();
-//    await db.rawInsert(
-//        'INSERT OR REPLACE INTO '
-//            '$tableName(${Book.db_id}, ${Book.db_title}, ${Book.db_url}, ${Book.db_star}, ${Book.db_notes}, ${Book.db_author}, ${Book.db_description}, ${Book.db_subtitle})'
-//            ' VALUES(?, ?, ?, ?, ?, ?, ?, ?)',
-//        [book.id, book.title, book.url, book.starred? 1:0, book.notes, book.author, book.description, book.subtitle]);
-//
-//  }
-
   Future<CategoryClass> upsertCategory(CategoryClass category) async {
     var db = await _getDb();
     var count = Sqflite.firstIntValue(
@@ -411,6 +399,40 @@ class ChecklistDatabase {
     }
     print("Upserted ${step.id} with name ${step.name}");
 
+    return step;
+  }
+
+  Future<StepClass> upsertSavedStep({CheckList checklist, StepClass step}) async {
+    var db = await _getDb();
+    var count = Sqflite.firstIntValue(
+        await db.rawQuery(
+            "SELECT COUNT(*) FROM $savedStepTableName "
+                "WHERE ${StepClass.db_saved_checklist_id} = ? "
+                "AND ${StepClass.db_saved_step_id} = ?",
+            [checklist.saved_checklist_id, step.id]
+        )
+    );
+    if (count == 0) {
+      await db.insert(savedStepTableName, {
+        StepClass.db_saved_checklist_id: checklist.saved_checklist_id,
+        StepClass.db_saved_step_id: step.id,
+        StepClass.db_isDone: step.isDone,
+        StepClass.db_notes: step.notes,
+        StepClass.db_imagePath: step.imagePath
+      });
+    } else {
+      await db.update(
+          savedStepTableName,
+          {
+            StepClass.db_isDone: step.isDone,
+            StepClass.db_notes: step.notes,
+            StepClass.db_imagePath: step.imagePath
+          },
+          where: "${StepClass.db_saved_checklist_id} = ? "
+              "AND ${StepClass.db_saved_step_id} = ?",
+          whereArgs: [checklist.saved_checklist_id, step.id]
+      );
+    }
     return step;
   }
 
