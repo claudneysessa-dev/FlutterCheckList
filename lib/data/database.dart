@@ -220,7 +220,8 @@ class ChecklistDatabase {
   Future<List<Map<String, dynamic>>> getSavedStepsData(String id) async {
     var db = await _getDb();
     // Building SELECT * FROM TABLE WHERE ID IN (id1, id2, ..., idn)
-    var result = await db.rawQuery('SELECT * FROM $savedStepTableName WHERE ${StepClass.db_saved_checklist_id} = $id');
+    var result = await db.rawQuery('SELECT * FROM $savedStepTableName WHERE ${StepClass.db_saved_checklist_id} = $id order by ${StepClass.db_saved_step_id}');
+    if (result.length == 0) return [];
     return result;
   }
 
@@ -230,10 +231,22 @@ class ChecklistDatabase {
     if(results.length == 0)return [];
     List<CheckList> checklists = [];
     for(Map<String,dynamic> map in results) {
+      var savedChecklistId = map[CheckList.db_id];
       var checklistId = map[StepClass.db_checklist_id];
       CheckList checklist = await getChecklist(checklistId.toString());
       checklist.alreadySaved = true;
       checklist.category = await getCategory(checklist.category_id.toString());
+      checklist.steps = await getSteps(checklist: checklist);
+      var stepsData = await getSavedStepsData(savedChecklistId.toString());
+      for (Map<String,dynamic> stepData in stepsData) {
+        for (StepClass step in checklist.steps) {
+          if (step.id == stepData["id"]) {
+            step.isDone = stepData[StepClass.db_isDone];
+            step.notes = stepData[StepClass.db_notes];
+            step.imagePath = stepData[StepClass.db_imagePath];
+          }
+        }
+      }
       checklists.add(checklist);
     }
     return checklists;
@@ -260,6 +273,9 @@ class ChecklistDatabase {
       for(var result in results) {
         StepClass stepClass = StepClass.fromMap(result);
         stepClass.checklist = checklist;
+        stepClass.isDone = false;
+        stepClass.notes = "";
+        stepClass.imagePath = "";
         stepClass.contents = await getContents(step: stepClass.id.toString());
         steps.add(stepClass);
       }

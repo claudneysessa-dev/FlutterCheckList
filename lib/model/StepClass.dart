@@ -26,7 +26,6 @@ class StepClass implements ListItem {
   String type;
   int checklist_id;
   CheckList checklist;
-  String content;
   List<ContentClass> contents;
   String _notes = "";
   String _imageUrl = "";
@@ -43,7 +42,7 @@ class StepClass implements ListItem {
     _imageUrl = imageUrl;
   }
 
-  StepClass({this.id, this.name, this.type, this.content, this.checklist_id, notes, this.imagePath, this.isDone, this.contents});
+  StepClass({this.id, this.name, this.type, this.checklist_id, notes, this.imagePath, this.isDone, this.contents});
 
   factory StepClass.fromJson(Map<String, dynamic> json) {
     return StepClass(
@@ -59,7 +58,7 @@ class StepClass implements ListItem {
     id: map[db_id],
     name: map[db_name],
     type: map[db_type],
-    checklist_id: map[db_checklist_id],
+    checklist_id: map[db_checklist_id]
   );
 
   // Currently not used

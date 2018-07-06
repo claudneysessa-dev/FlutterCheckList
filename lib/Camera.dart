@@ -81,7 +81,7 @@ class _CameraAppState extends State<Camera> {
     takePicture().then((String filePath) {
       if (mounted) {
         setState(() {
-          step.imageUrl = filePath;
+          step.imagePath = filePath;
         });
         if (filePath != null) showInSnackBar('Picture saved to $filePath');
         Navigator.of(context).pop();

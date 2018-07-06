@@ -25,11 +25,6 @@ class StepCardState extends State<StepCard> {
   CheckList checklist;
   List<CameraDescription> cameras;
   TextEditingController  myController;
-  File jsonFile;
-  Directory dir;
-  String fileName = "savedCheckLists.json";
-  bool fileExists = false;
-  List<dynamic> fileContent;
 
   StepCardState(StepClass step, CheckList checklist) {
     this.step = step;
@@ -83,7 +78,7 @@ class StepCardState extends State<StepCard> {
               icon: new Icon(step.isDone ? Icons.done_all: Icons.done),
               onPressed: () {
                 setState(() {
-                  step.isDone = step.isDone ? false: true;
+                  step.isDone = step.isDone ? false : true;
                 });
               }
           ),
@@ -117,9 +112,9 @@ class StepCardState extends State<StepCard> {
         alignment: Alignment.bottomCenter,
         child: new GestureDetector(
           child: new SizedBox(
-            child: step.imageUrl.isEmpty
+            child: step.imagePath.isEmpty
                 ? new Container()
-                : new Image.file(new File(step.imageUrl)),
+                : new Image.file(new File(step.imagePath)),
             width: 128.0,
             height: 128.0,
             //TODO implement ontap larger image or allow user to click other image
@@ -129,7 +124,7 @@ class StepCardState extends State<StepCard> {
               context: context,
               builder: (_) => new AlertDialog(
                 content: new Hero(
-                  child: new Image.file(new File(step.imageUrl)), tag: "Step Image preview",
+                  child: new Image.file(new File(step.imagePath)), tag: "Step Image preview",
                 ),
               ),
             );
