@@ -13,6 +13,9 @@ dependencies:
   intl: any
   path_provider: any
   sqflite: any
+  share:
+      git:
+       url: https://github.com/d-silveira/flutter-share.git
 
 dev_dependencies:
   flutter_test:

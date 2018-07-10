@@ -4,6 +4,7 @@ import 'package:flutter_app/model/CategoryClass.dart';
 import 'package:flutter_app/model/ListItem.dart';
 import 'package:flutter_app/model/StepClass.dart';
 import 'package:intl/intl.dart';
+import 'package:share/share.dart';
 
 class CheckList implements ListItem {
   static final db_id = "id";
@@ -75,5 +76,35 @@ class CheckList implements ListItem {
       db_type: type,
       db_category_id: category_id
     };
+  }
+
+  List<Share> toSharable() {
+    List<Share> result = new List();
+    String info = type + " "
+        + name + " "
+        + category.name + " "
+        + steps.length.toString();
+    result.add(Share.plainText(text: info, title: name));
+    for (StepClass step in steps) {
+      if (step.notes.isNotEmpty) {
+        result.add(
+            Share.plainText(
+                text: step.notes,
+                title: step.name
+            )
+        );
+      }
+
+      if (step.imagePath.isNotEmpty) {
+        result.add(
+            Share.image(
+                path: step.imagePath,
+                mimeType: ShareType.TYPE_IMAGE,
+                title: step.name
+            )
+        );
+      }
+    }
+    return result;
   }
 }

@@ -6,6 +6,7 @@ import 'package:flutter_app/EditCheckList.dart';
 import 'package:flutter_app/model/CategoryClass.dart';
 import 'package:flutter_app/model/CheckList.dart';
 import 'package:flutter_app/model/ListItem.dart';
+import 'package:share/share.dart';
 
 class Categories extends StatefulWidget {
   final List<CategoryClass> categories;
@@ -80,6 +81,19 @@ class CategoryState extends State<Categories> {
     );
   }
 
+  void _shareChecklist(CheckList checklist) {
+    final RenderBox box = context.findRenderObject();
+    Share.multiple(
+        shares: checklist.toSharable(),
+        title: checklist.name
+      )
+        .share(
+          sharePositionOrigin:
+          box.localToGlobal(Offset.zero) &
+          box.size
+    );
+  }
+
   void _editCheckList(CheckList checkList) {
 
     Navigator.of(context).push(
@@ -88,6 +102,15 @@ class CategoryState extends State<Categories> {
           return new Scaffold(
             appBar: new AppBar(
               title: new Text('Edit ' + checkList.name),
+              actions: <Widget>[
+                // action button
+                IconButton(
+                  icon: Icon(Icons.share),
+                  onPressed: () {
+                    _shareChecklist(checkList);
+                  },
+                ),
+              ]
             ),
             body: new EditCheckList(checkList: checkList,)
           );
